@@ -21,4 +21,5 @@ A Sequence Detector can be used in the following areas:
 
 ### Block Diagram of Sequence Detector
 
+![Alt text](e.jpg)
 
