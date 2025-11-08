@@ -94,6 +94,16 @@ $   yosys
 $   yosys>    script yosys_run.sh
 ```
 
+### To view different types of cells after Synthesis
+```
+$   yosys>    stat
+```
+
+### To view the generated Schemantics
+```
+$   yosys>    show
+```
+
 ### Gate Level Simulation (GLS)
 
 GLS generates the simulation output by running test bench along with the netlist file generated from synthesis as design under test.
