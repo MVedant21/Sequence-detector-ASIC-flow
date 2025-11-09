@@ -148,3 +148,66 @@ In this simultion result we observe three waveform namely Clock(clk), Sequence I
 Here we observe that the pre-synthesis output O1 is equal to the post-synthesis output (O2).
 
 
+## Layout
+
+### Python Installation
+```
+$   sudo apt install -y build-essential python3 python3-venv python3-pip
+```
+
+### Docker Installation
+```
+$   sudo apt-get update
+$   sudo apt-get install docker docker-compose
+$   sudo systemctl start docker
+$   sudo docker run hello-world
+```
+
+*If the docker is successfully installed u will get a success message like below*
+
+![Alt text](.jpg)
+
+### OpenLANE Installation
+
+OpenLane is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, CVC, SPEF-Extractor, CU-GR, Klayout and a number of custom scripts for design exploration and optimization. The flow performs full ASIC implementation steps from RTL all the way down to GDSII.
+
+Perform the commands below to install openlane.
+
+```
+$   git clone https://github.com/The-OpenROAD-Project/OpenLane.git
+$   cd OpenLane/
+$   make
+$   make test
+```
+
+After 43 steps, if it ends with saying - "Basic test passed", then open lane is installed succesfully.
+
+![Alt text](.jpg)
+
+### Magic Installation
+
+For Magic to be installed and for it to work properly the following softwares have to be installed first.
+
+```
+$   sudo apt-get install m4 
+$   sudo apt-get install tcsh
+$   sudo apt-get install csh
+$   sudo apt-get install libx11-dev
+$   sudo apt-get install tcl-dev tk-dev
+$   sudo apt-get install libcairo2-dev
+$   sudo apt-get install mesa-common-dev libglu1-mesa-dev
+$   sudo apt-get install libncurses-dev
+```
+
+
+#### Installing Magic
+```
+$   git clone https://github.com/RTimothyEdwards/magic
+$   cd magic
+$   ./configure
+$   make
+$   make install
+```
+
+
+
