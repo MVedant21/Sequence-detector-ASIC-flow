@@ -23,6 +23,11 @@ A Sequence Detector can be used in the following areas:
 
 ![Alt text](e.jpg)
 
+
+### Schematic of Sequence Detector using VIVADO
+
+![Alt text](.jpg)
+
 ### Introduction to open-source simulator Iverilog
 
 RTL design is simulated to check for its adherence wrt to the spec. To simulate we use Iverilog. Icarus Verilog is a Verilog simulation and synthesis tool. 
@@ -121,3 +126,25 @@ $   gtkwave seq_set.vcd
 ### Functional Characteristics
 
 In this simultion result we observe three waveform namely Clock(clk), Sequence Input and Detected Output. We also observe that around 160ns the Detector displays a HIGH signal indicating that the given sequence of '1111' was detected succesfully.
+
+![Alt text](.jpg)
+
+### Netlist representation
+
+![Alt text](.jpg)
+
+### Statistics after Synthesis
+
+![Alt text](.jpg)
+
+### Pre Synthesis Simulation Result (O1)
+
+![Alt text](.jpg)
+
+### Post Synthesis Simulation Result (O2)
+
+![Alt text](.jpg)
+
+Here we observe that the pre-synthesis output O1 is equal to the post-synthesis output (O2).
+
+
