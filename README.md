@@ -28,6 +28,7 @@ A Sequence Detector can be used in the following areas:
 
 ![Alt text](ASIC_project_images/vivado_schematic.png)
 
+
 ### Introduction to open-source simulator Iverilog
 
 RTL design is simulated to check for its adherence wrt to the spec. To simulate we use Iverilog. Icarus Verilog is a Verilog simulation and synthesis tool. 
@@ -171,6 +172,8 @@ $   sudo docker run hello-world
 
 OpenLane is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, CVC, SPEF-Extractor, CU-GR, Klayout and a number of custom scripts for design exploration and optimization. The flow performs full ASIC implementation steps from RTL all the way down to GDSII.
 
+![Alt text](ASIC_project_images/openlane_flow.jpg)
+
 Perform the commands below to install openlane.
 
 ```
@@ -289,6 +292,270 @@ $   ngspice sky130_inv.spice
 ```
 
 ![Alt text](ASIC_project_images/ngspice_console.jpg)
+
+
+Now to plot the graphs for the designed inverter model, type the command below in the ngspice console.
+
+```
+->  plot y vs time a
+```
+
+![Alt text](ASIC_project_images/simulation.jpg)
+
+Four timing parameters are used to characterize the inverter standard cell:
+
+1. Rise time: Time taken for the output to rise from 20% of max value to 80% of max value
+`Rise time = (2.23843 - 2.17935) = 59.08ps`
+
+2. Fall time- Time taken for the output to fall from 80% of max value to 20% of max value
+`Fall time = (4.09291 - 4.05004) = 42.87ps`
+
+3. Cell rise delay = time(50% output rise) - time(50% input fall)
+`Cell rise delay = (2.20636 - 2.15) = 56.36ps`
+
+4. Cell fall delay = time(50% output fall) - time(50% input rise)
+`Cell fall delay = (4.07479 - 4.05) = 24.79ps`
+
+To get a grid and to ensure the ports are placed correctly we can use this command in the tcl console.
+
+```
+%   grid 0.46um 0.34um 0.23um 0.17um
+```
+
+![Alt text](ASIC_project_images/inverter_grid.png)
+
+To save the file with a different name, use the command below in tcl window.
+
+```
+%   save sky130_vsdinv.mag
+```
+
+Now open the sky130_vsdinv.mag using the magic command in terminal
+
+```
+$   magic -T sky130A.tech sky130_vsdinv.mag
+```
+
+In the tcl window type the following command to generate sky130_vsdinv.lef
+
+```
+%   lef write
+```
+
+*A new `sky130_vsdinv.lef` file be created in the current directory.*
+
+
+## Layout
+
+### Preparatory Steps
+
+The layout for the design we have been working on can be created using OpenLANE. But before this we have to perform some preparatory steps to run our custom design in OpenLANE. Navigate to the openlane folder and run the commands below.
+
+```
+$   cd designs
+$   mkdir asic_flow
+$   cd asic_flow
+$   touch config.json
+$   mkdir src
+$   cd src
+```
+
+Next copy `seq_detector.v`, `sky130_fd_sc_hd__fast.lib`, `sky130_fd_sc_hd__slow.lib`, `sky130_fd_sc_hd__typical.lib` and `sky130_vsdinv.lef` in the src folder. The `seq_detector.v` should be copied from the main repository, and the whole layout procedure will be carried out on this RTL design file.
+
+Post this step, your `src` folder should like below
+
+![Alt text](ASIC_project_images/file_structure2.jpg)
+
+Next we shall edit the `cofig.json` file.
+
+```
+{
+    "DESIGN_NAME": "Sequence_detector_moore",
+    "VERILOG_FILES": "dir::src/seq_detector.v",
+    "CLOCK_PORT": "clk",
+    "CLOCK_NET": "clk",
+    "GLB_RESIZER_TIMING_OPTIMIZATIONS": true,
+    "CLOCK_PERIOD": 10,
+    "PL_RANDOM_GLB_PLACEMENT": 1,
+    "PL_TARGET_DENSITY": 0.5,
+    "FP_SIZING" : "relative",
+        
+    "LIB_SYNTH": "dir::src/sky130_fd_sc_hd__typical.lib",
+    "LIB_FASTEST": "dir::src/sky130_fd_sc_hd__fast.lib",
+    "LIB_SLOWEST": "dir::src/sky130_fd_sc_hd__slow.lib",
+    "LIB_TYPICAL": "dir::src/sky130_fd_sc_hd__typical.lib",  
+    "TEST_EXTERNAL_GLOB": "dir::../asic_flow/src/*",
+    "SYNTH_DRIVING_CELL":"sky130_vsdinv",
+    
+    "pdk::sky130*": {
+        "FP_CORE_UTIL": 5,
+        "scl::sky130_fd_sc_hd": {
+            "FP_CORE_UTIL": 5
+        }
+    }
+
+}
+```
+
+In this file the `DESIGN_NAME` corresponds to the name of the module in your design file also note to change the `CLOCK_PORT` and `CLOCK_NET` variables as per clock used in your design file.
+
+
+### Errors in config.json
+
+Now the major part where I encountered a lot of errors, was tweaking values in `.json` file based on the design files.
+
+**Mostly occurs in floorplan**
+```
+1) [ERROR PDN-0175] Pitch 5.04050 is too small for, must be atleast 6.6000
+```
+For these type of errors just try decreasing the values of:
+
+`PL_TARGET_DENSITY` to 0.6 or 0.5 .
+
+`FP_CORE_UTIL` to half the current value and run the synthesis again.
+
+**Mostly occurs in placement**
+```
+2) [ERROR GPL-0306] RePlAce diverged at wire/density gradient Sum.
+```
+For these type of errors :
+
+We can observe the `worst slack value` in red color and trying to bring it to a minimal value tending to zero will help us solve this error. This value can be fixed by reducing the `CLOCK_PERIOD` in `.json` file.
+
+Save all the changes made above and navigate to the OpenLane folder in terminal and run the below command.
+
+```
+$   sudo make mount
+```
+
+![Alt text](ASIC_project_images/make_mount.jpg)
+
+After entering the openlane container give the following command for a step by step procedure:
+
+```
+$   ./flow.tcl -interactive
+```
+
+This command will open the tcl console. In the tcl console type the following commands:
+
+```
+%   package require openlane 1.0.2
+%   prep -design asic_flow
+```
+
+*In the above command, put the right version of openlane installed.*
+
+The following commands are to merge the external lef files to the `merged.nom.lef.` In our case `sky130_vsdiat.lef` is the external .lef file that gets merged to the lef file.
+
+```
+%   set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+%   add_lefs -src $lefs
+```
+
+![Alt text](ASIC_project_images/prep_asic_flow.jpg)
+
+After the merging step, the contents of the `merged.nom.lef` file should contain the Macro definition of `sky130_vsdinv` as shown below.
+
+![Alt text](ASIC_project_images/sky130_1.jpg)
+
+
+## Synthesis
+
+Run the below command.
+```
+%   run_synthesis
+```
+
+![Alt text](ASIC_project_images/synthesis.jpg)
+
+### Synthesis Reports
+
+**Details of the gates used**
+
+![Alt text](ASIC_project_images/synthesis_report.jpg)
+
+**Setup and Hold Slack after synthesis**
+
+![Alt text](ASIC_project_images/sta_report.jpg)
+
+The `sky130_vsdinv` should also reflect in your netlist post Synthesis as shown below.
+
+![Alt text](ASIC_project_images/sky130_2.jpg)
+
+
+## Floorplan
+
+Run the below command.
+```
+%   run_floorplan
+```
+
+![Alt text](ASIC_project_images/floorplan.jpg)
+
+### Floorplan Reports
+
+**Die Area**
+
+![Alt text](ASIC_project_images/diea_area.jpg)
+
+**Core Area**
+
+![Alt text](ASIC_project_images/core_area.jpg)
+
+Navigate to results -> floorplan and type the below Magic command in terminal to open the floorplan.
+
+```
+magic -T /home/vedant/asic_project/OpenLane/pdks/sky130A/libs.tech/magic/sky130A.tech read ../../tmp/merged.nom.lef def read Sequence_detector_moore.def &
+```
+
+**Floorplan View**
+
+![Alt text](ASIC_project_images/floorplan_dgm.jpg)
+
+**Zoomed in view of the stacked components pre placement**
+
+![Alt text](ASIC_project_images/zoomed_floorplan.jpg)
+
+
+
+## Placement
+
+Run the below command.
+```
+%   run_placement
+```
+
+![Alt text](ASIC_project_images/placement.jpg)
+
+
+### Placement Reports
+
+**Placement View**
+
+![Alt text](ASIC_project_images/placement_view.jpg)
+
+**We can also locate the `sky130_vsdinv` in this view**
+
+![Alt text](ASIC_project_images/zoomed_placement.jpg)
+
+The sky130_vsdinv should also reflect in the netlist post placement as shown below.
+
+![Alt text](ASIC_project_images/sky130_3.jpg)
+
+
+
+
+## Clock Tree Synthesis (CTS)
+
+Run the below command.
+```
+%   run_cts
+```
+
+![Alt text](ASIC_project_images/cts.jpg)
+
+
+
 
 
 
