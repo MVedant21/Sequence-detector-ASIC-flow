@@ -26,7 +26,7 @@ A Sequence Detector can be used in the following areas:
 
 ### Schematic of Sequence Detector using VIVADO
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/vivado_schematic.png)
 
 ### Introduction to open-source simulator Iverilog
 
@@ -127,23 +127,23 @@ $   gtkwave seq_set.vcd
 
 In this simultion result we observe three waveform namely Clock(clk), Sequence Input and Detected Output. We also observe that around 160ns the Detector displays a HIGH signal indicating that the given sequence of '1111' was detected succesfully.
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/sim1.jpg)
 
 ### Netlist representation
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/show.jpg)
 
 ### Statistics after Synthesis
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/stat.jpg)
 
 ### Pre Synthesis Simulation Result (O1)
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/pre_synth_sim.jpg)
 
 ### Post Synthesis Simulation Result (O2)
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/post_synth_sim.jpg)
 
 Here we observe that the pre-synthesis output O1 is equal to the post-synthesis output (O2).
 
@@ -165,7 +165,7 @@ $   sudo docker run hello-world
 
 *If the docker is successfully installed u will get a success message like below*
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/hello_docker.jpg)
 
 ### OpenLANE Installation
 
@@ -182,7 +182,7 @@ $   make test
 
 After 43 steps, if it ends with saying - "Basic test passed", then open lane is installed succesfully.
 
-![Alt text](.jpg)
+![Alt text](ASIC_project_images/open_lane_installation.jpg)
 
 ### Magic Installation
 
