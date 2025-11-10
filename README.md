@@ -555,8 +555,96 @@ Run the below command.
 ![Alt text](ASIC_project_images/cts.jpg)
 
 
+### Timing Reports
+
+**Power and Area**
+
+![Alt text](ASIC_project_images/pwoer_report.jpg)
+
+**Timing Analysis**
+
+![Alt text](ASIC_project_images/cts_logs.jpg)
 
 
 
 
+## Routing
 
+Run the below command.
+```
+%   run_routing
+```
+
+![Alt text](ASIC_project_images/routing.jpg)
+
+
+### Routing Reports
+
+Navigate to results->routing and type the below Magic command in terminal to open the placement view.
+
+```
+magic -T /home/vedant/asic_project/OpenLane/pdks/sky130A/libs.tech/magic/sky130A.tech read ../../tmp/merged.nom.lef def read Sequence_detector_moore.def &
+```
+
+**Routing view**
+
+![Alt text](ASIC_project_images/routing_view.jpg)
+
+**We can also locate the `sky130_vsdinv` in this view**
+
+![Alt text](ASIC_project_images/routing_view1.jpg)
+
+**Area report by magic**
+
+![Alt text](ASIC_project_images/area_report_magic.jpg)
+
+The sky130_vsdinv should also reflect in your netlist post routing as shown below.
+
+![Alt text](ASIC_project_images/sky130_4.jpg)
+
+
+## Results Post_Layout
+
+### 1. Post Layout synthesis gate count
+
+![Alt text](ASIC_project_images/synthesis_report.jpg)
+
+** Gate count = 15 **
+
+
+### 2. Area (box command)
+
+![Alt text](ASIC_project_images/area_report_magic2.jpg)
+
+
+### 3. Performance
+
+Use the below commands.
+
+```
+
+```
+
+** Performance = 1/(clock period - slack) = 1/(6 - 3.78)ns = 470.45 MHz **
+
+
+### 4. Flop/(Standard Cell Ratio)
+
+![Alt text](ASIC_project_images/synthesis_report.jpg)
+
+** Flop Ratio = Ratio of total number of flip flops / Total number of cells present in the design = 3/15 = 0.200 **
+
+
+### 5. Power (Internal, Switching, Leakage and Total)
+
+![Alt text](ASIC_project_images/power_report.jpg)
+
+```
+Internal Power  = 1.07e-04 W (86.7%)
+
+Switching Power = 1.65e-05 W (13.3%)
+
+Leakage Power   = 2.41e-10 W (0.0%)
+
+Total Power     = 1.24e-04 W (100%)
+```
