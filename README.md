@@ -21,7 +21,7 @@ A Sequence Detector can be used in the following areas:
 
 ### Block Diagram of Sequence Detector
 
-![Alt text](ASIC_preoject_images/block_diagram.jpg)
+![Alt text](ASIC_project_images/block_diagram.jpg)
 
 
 ### Schematic of Sequence Detector using VIVADO
