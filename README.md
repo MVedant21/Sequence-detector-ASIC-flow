@@ -210,4 +210,86 @@ $   make install
 ```
 
 
+### Creating a Custom Inverter Cell
+
+A Custom Inverter Cell is required to create an inverter that can be tweaked based on our requirements and locally used in our design files.
+
+Open the folder you want to create the inverter into on the terminal. Use the commands below to create a custom inverter cell. 
+
+```
+$   git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+$   cd vsdstdcelldesign
+$   cp ./libs/sky130A.tech sky130A.tech
+$   magic -T sky130A.tech sky130_inv.mag &
+```
+
+Two windows pop up when we run the above magic command, The first window is the Magic Viewport and the second window is the TCL console.
+
+![Alt text](ASIC_project_images/magic_inv.jpg)
+
+The above layout can be seen in the magic viewport. The design can be verified here and different layers can be seen and examined by selecting the area of examination and typeing `what` in the tcl window.
+
+To extract Spice netlist, use the following commands in tcl window.
+
+```
+%   extract all
+%   ext2spice cthresh 0 rthresh 0
+%   ext2spice
+```
+
+*Note that the `cthresh 0 rthresh 0` are used to extract parasitic capacitances from the cell.*
+
+![Alt text](ASIC_project_images/area_pic1.jpg)
+
+After this step,
+
+The spice netlist has to be edited to add the libraries we are using. To edit the spice netlist navigate to the `vsdstdcelldesign` directory and look for `sky130_inv.spice` file and edit it as shown below.
+
+![Alt text](ASIC_project_images/file_structure.jpg)
+
+The final spice netlist should look like the following:
+
+```
+* SPICE3 file created from sky130_inv.ext - technology: sky130A
+
+.option scale=0.01u
+.include ./libs/pshort.lib
+.include ./libs/nshort.lib
+
+
+M1001 Y A VGND VGND nshort_model.0 ad=1435 pd=152 as=1365 ps=148 w=35 l=23
+M1000 Y A VPWR VPWR pshort_model.0 ad=1443 pd=152 as=1517 ps=156 w=37 l=23
+VDD VPWR 0 3.3V
+VSS VGND 0 0V
+Va A VGND PULSE(0V 3.3V 0 0.1ns 0.1ns 2ns 4ns)
+C0 Y VPWR 0.08fF
+C1 A Y 0.02fF
+C2 A VPWR 0.08fF
+C3 Y VGND 0.18fF
+C4 VPWR VGND 0.74fF
+
+
+.tran 1n 20n
+.control
+run
+.endc
+.end
+```
+
+Save the above editted file and install the ngspice tool using the commands below.
+
+```
+$   sudo apt-get install ngspice
+```
+
+Next, open the terminal in the directory where `ngspice` is stored and type the command below. The ngspice console will open.
+
+```
+$   ngspice sky130_inv.spice 
+```
+
+![Alt text](ASIC_project_images/ngspice_console.jpg)
+
+
+
 
