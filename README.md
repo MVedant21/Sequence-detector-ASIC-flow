@@ -609,7 +609,7 @@ The sky130_vsdinv should also reflect in your netlist post routing as shown belo
 
 ![Alt text](ASIC_project_images/synthesis_report.jpg)
 
-** Gate count = 15 **
+**Gate count = 15**
 
 
 ### 2. Area (box command)
@@ -636,14 +636,14 @@ read_verilog /home/vedant/asic_project/OpenLane/designs/asic_flow/runs/RUN_2025.
 link_design Sequence_detector_moore
 ```
 
-** Performance = 1/(clock period - slack) = 1/(6 - 3.78)ns = 470.45 MHz **
+**Performance = 1/(clock period - slack) = 1/(6 - 3.78)ns = 470.45 MHz**
 
 
 ### 4. Flop/(Standard Cell Ratio)
 
 ![Alt text](ASIC_project_images/synthesis_report.jpg)
 
-** Flop Ratio = Ratio of total number of flip flops / Total number of cells present in the design = 3/15 = 0.200 **
+**Flop Ratio = Ratio of total number of flip flops / Total number of cells present in the design = 3/15 = 0.200**
 
 
 ### 5. Power (Internal, Switching, Leakage and Total)
