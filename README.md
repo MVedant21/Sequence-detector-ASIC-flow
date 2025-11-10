@@ -559,7 +559,7 @@ Run the below command.
 
 **Power and Area**
 
-![Alt text](ASIC_project_images/pwoer_report.jpg)
+![Alt text](ASIC_project_images/power_report.jpg)
 
 **Timing Analysis**
 
@@ -619,10 +619,21 @@ The sky130_vsdinv should also reflect in your netlist post routing as shown belo
 
 ### 3. Performance
 
-Use the below commands.
+Use the below command in the terminal.
 
 ```
+$   sta
+```
 
+The above command will open the OpenSTA terminal.
+
+Use the below commands to generate the STA report.
+
+```
+read_liberty -max /home/vedant/asic_project/OpenLane/designs/asic_flow/src/sky130_fd_sc_hd__fast.lib
+read_liberty -min /home/vedant/asic_project/OpenLane/designs/asic_flow/src/sky130_fd_sc_hd__slow.lib
+read_verilog /home/vedant/asic_project/OpenLane/designs/asic_flow/runs/RUN_2025.09.28_06.28.48/results/routing/seq_detector.resized.v
+link_design Sequence_detector_moore
 ```
 
 ** Performance = 1/(clock period - slack) = 1/(6 - 3.78)ns = 470.45 MHz **
